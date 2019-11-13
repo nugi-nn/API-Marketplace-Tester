@@ -1,0 +1,168 @@
+{
+	"info": {
+		"_postman_id": "e5451b6c-e1cc-4645-a322-d7941a3ba60c",
+		"name": "API-Marketplace-Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "8fc4dc61-4a3d-465e-acc0-dbc722e6f913",
+								"exec": [
+									"",
+									"pm.test(\"Get Token From Login\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    // pm.expect(jsonData.data.access_token).to.eq(\"\");",
+									"    pm.globals.set(\"marketplaceToken\", jsonData.access_token);",
+									"    pm.globals.set(\"kalcareApiToken\", jsonData.access_token);",
+									"});",
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,202]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "mzaenalm@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "admin",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Info Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a9cfd33c-7461-4784-b744-e35e3bd43782",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"let jsonData = pm.response.json();",
+									"",
+									"console.log(jsonData.data);",
+									"    pm.response.to.have.status(200);",
+									"    pm.test(\"id\", function () {",
+									"    pm.expect(jsonData.data.id).to.eql(1);})",
+									"    pm.test(\"email\", function () {",
+									"    pm.expect(jsonData.data.email).to.eql('mzaenalm@gmail.com');})",
+									"    pm.test(\"name\", function () {",
+									"    pm.expect(jsonData.data.name).to.eql('mzaenalm');})",
+									"    pm.test(\"status\", function () {",
+									"    pm.expect(jsonData.data.status).to.eql(true);})",
+									"    pm.test(\"preferences\", function () {",
+									"    pm.expect(jsonData.data.preferences).to.eql(null);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/info",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"info"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{marketplaceToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "91af23bf-6087-442e-818a-0b58bfeb9bdd",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "b9f5fdb5-4240-44f4-9185-af9f288b815c",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "526030c9-5838-4f9f-a93f-bd74372edad5",
+			"key": "baseUrl",
+			"value": "https://kalcare-api.karsalintasbuwana.com",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
