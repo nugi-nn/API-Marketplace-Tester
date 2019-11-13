@@ -164,5 +164,5 @@
 			"type": "string"
 		}
 	],
-	"protocolProfileBehavior": { }
+	"protocolProfileBehavior": {}
 }
