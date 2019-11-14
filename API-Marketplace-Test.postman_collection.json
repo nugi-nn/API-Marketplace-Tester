@@ -408,7 +408,7 @@
 							"script": {
 								"id": "6eb76692-8b5c-47ff-beb7-45ea56d46b98",
 								"exec": [
-									"pm.test(\"Status code should be 404 (Not Found)\", function () {",
+									"pm.test(\"Status code should be 404 (Not Found Data)\", function () {",
 									"    pm.response.to.have.status(404);",
 									"});",
 									"",
