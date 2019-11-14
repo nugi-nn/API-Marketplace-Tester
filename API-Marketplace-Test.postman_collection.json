@@ -122,6 +122,339 @@
 				}
 			],
 			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Store",
+			"item": [
+				{
+					"name": "Store - All",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a0591a0b-18d0-4c9b-8b62-b6de5cc46536",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"let jsonData = pm.response.json();",
+									"",
+									"console.log(jsonData.data);",
+									"    ",
+									"tests[\"Response of data should be an array\"] = Array.isArray(jsonData['data']);",
+									"// tests[\"data.links : Response should be an array\"] = Array.isArray(jsonData.data[0]['links']);",
+									"",
+									"pm.test(\"Test attribute & type data (id , store_code & store_name)\", () => {",
+									"    _.each(jsonData.data, (item) => {",
+									"        pm.expect(item.id).to.be.a('number');",
+									"        pm.expect(item.store_code).to.be.a('string');",
+									"        pm.expect(item.store_name).to.be.a('string');",
+									"        pm.expect(item.links[0].rel).to.be.a('string');",
+									"        pm.expect(item.links[0].uri).to.be.a('string');",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/channel/stores?q=(status:1)&fields=(store_code,store_name)&limit=10&page=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"channel",
+								"stores"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "(status:1)"
+								},
+								{
+									"key": "fields",
+									"value": "(store_code,store_name)"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						},
+						"description": "SELECT id, store_code, store_name, status, created_at, updated_at, deleted_at\r\n\tFROM public.store;"
+					},
+					"response": []
+				},
+				{
+					"name": "Store - Create One",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "4d0a001e-0ff5-47cd-99f5-8de9437b9d21",
+								"exec": [
+									"// var QA = {\r",
+									"// \t\"store_code\": \"QATEST\", \r",
+									"// \t\"store_name\": \"TESTING\", \r",
+									"// \t\"status\": 1\r",
+									"// }\r",
+									"\r",
+									"// pm.globals.set('QA', JSON.stringify(QA));\r",
+									"\r",
+									"\r",
+									"\r",
+									"pm.globals.set(\"store_code\", \"QATEST\");\r",
+									"pm.globals.set(\"store_name\", \"TESTING\");\r",
+									"pm.globals.set(\"status\", true);\r",
+									"\r",
+									"// if (pm.globals.get(\"store_code\").toLowerCase() === pm.globals.get(\"store_code\").toLowerCase()) {\r",
+									"//     console.error(\"Entity values do not match\");\r",
+									"//     throw new Error(\"Entity values do not match\");\r",
+									"// }\r",
+									"\r",
+									"// if (pm.globals.get(\"store_code\") !== pm.globals.get(\"store_code\")){\r",
+									"//     console.error(\"Store_code sudah exist\");\r",
+									"//     throw new Error(\"Store_code sudah exist\");\r",
+									"// }\r",
+									"\r",
+									"// var url = pm.variables.get(\"baseUrl\")+\"/channel/stores?q=(store_code:QATEST)&fields=(store_code,store_name)&limit=1&page=1\";\r",
+									"// console.log(\"url: \"+url);\r",
+									"// pm.sendRequest(url, function (error, response){\r",
+									"//     if(error){\r",
+									"//         console.log(\"Error: \"+error);\r",
+									"//     }else{\r",
+									"//         pm.expect(response).to.have.property('code', 200);\r",
+									"//         getResponse = response.json();\r",
+									"//     }});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "76978c2f-bb07-4d69-b97d-d18658691937",
+								"exec": [
+									"pm.test(\"Status created | code must be one of 201,202\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,202]);",
+									"});",
+									"",
+									"let jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Compare value | store_code \", function () {",
+									"    pm.expect(jsonData.store_code).to.eql(pm.globals.get(\"store_code\"));",
+									"});",
+									"pm.test(\"Compare value | store_name \", function () {",
+									"    pm.expect(jsonData.store_name).to.eql(pm.globals.get(\"store_name\"));",
+									"});",
+									"pm.test(\"Compare value | status \", function () {",
+									"    pm.expect(jsonData.status).to.eql(pm.globals.get(\"status\"));",
+									"});",
+									"",
+									"var store_id = jsonData.id;",
+									"pm.globals.set(\"store-id\", store_id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"store_code\": \"{{store_code}}\", \n\t\"store_name\": \"{{store_name}}\", \n\t\"status\": {{status}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/channel/store",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"channel",
+								"store"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Store - By ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "6eb76692-8b5c-47ff-beb7-45ea56d46b98",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"let jsonData = pm.response.json();",
+									"",
+									"    pm.test(\"ID\", function () {",
+									"    pm.expect(jsonData.id).to.eql(pm.globals.get(\"store-id\"))});",
+									"    pm.test(\"Store Code\", function () {",
+									"    pm.expect(jsonData.store_code).to.eql(",
+									"    pm.globals.get(\"store_code\"))});",
+									"    pm.test(\"Store Name\", function () {",
+									"    pm.expect(jsonData.store_name).to.eql(pm.globals.get(\"store_name\"))});",
+									"    ",
+									"console.log(jsonData);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "a2e289c9-d4a7-4927-9fb5-b7338fd7434b",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/channel/store/{{store-id}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"channel",
+								"store",
+								"{{store-id}}"
+							]
+						},
+						"description": "SELECT * FROM public.store where id=193;"
+					},
+					"response": []
+				},
+				{
+					"name": "Store - by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "fa511eb9-dbdb-4f51-9f73-861ed6b4f9cc",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Delete data store\", function () {",
+									"    pm.expect(pm.response.text()).to.include('OK');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "",
+								"description": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/channel/store/{{store-id}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"channel",
+								"store",
+								"{{store-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Store - By ID (Verify data has deleted)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "6eb76692-8b5c-47ff-beb7-45ea56d46b98",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Verify data has deleted !\", function () {",
+									"    pm.expect(pm.response.json()).to.eql('Not Found');",
+									"});",
+									"",
+									"pm.globals.unset(\"store-id\");",
+									"pm.globals.unset(\"store_code\");",
+									"pm.globals.unset(\"store_name\");",
+									"pm.globals.unset(\"status\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "a2e289c9-d4a7-4927-9fb5-b7338fd7434b",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/channel/store/{{store-id}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"channel",
+								"store",
+								"{{store-id}}"
+							]
+						},
+						"description": "SELECT * FROM public.store where id=193;"
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
 		}
 	],
 	"auth": {
@@ -158,7 +491,7 @@
 	],
 	"variable": [
 		{
-			"id": "526030c9-5838-4f9f-a93f-bd74372edad5",
+			"id": "89125b31-336c-46fe-8167-69d6f4971470",
 			"key": "baseUrl",
 			"value": "https://kalcare-api.karsalintasbuwana.com",
 			"type": "string"
