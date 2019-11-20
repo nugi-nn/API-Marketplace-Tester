@@ -163,7 +163,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/channel/stores?q=(status:1)&fields=(store_code,store_name)&limit=10&page=1",
+							"raw": "{{baseUrl}}/channel/stores?q=(status:1)&fields=(store_code,store_name)&limit=100&page=1",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -182,7 +182,7 @@
 								},
 								{
 									"key": "limit",
-									"value": "10"
+									"value": "100"
 								},
 								{
 									"key": "page",
@@ -251,16 +251,16 @@
 									"let jsonData = pm.response.json();",
 									"",
 									"pm.test(\"Compare value | store_code \", function () {",
-									"    pm.expect(jsonData.store_code).to.eql(pm.globals.get(\"store_code\"));",
+									"    pm.expect(jsonData.data.store_code).to.eql(pm.globals.get(\"store_code\"));",
 									"});",
 									"pm.test(\"Compare value | store_name \", function () {",
-									"    pm.expect(jsonData.store_name).to.eql(pm.globals.get(\"store_name\"));",
+									"    pm.expect(jsonData.data.store_name).to.eql(pm.globals.get(\"store_name\"));",
 									"});",
 									"pm.test(\"Compare value | status \", function () {",
-									"    pm.expect(jsonData.status).to.eql(pm.globals.get(\"status\"));",
+									"    pm.expect(jsonData.data.status).to.eql(pm.globals.get(\"status\"));",
 									"});",
 									"",
-									"var store_id = jsonData.id;",
+									"var store_id = jsonData.data.id;",
 									"pm.globals.set(\"store-id\", store_id);"
 								],
 								"type": "text/javascript"
@@ -314,12 +314,12 @@
 									"let jsonData = pm.response.json();",
 									"",
 									"    pm.test(\"ID\", function () {",
-									"    pm.expect(jsonData.id).to.eql(pm.globals.get(\"store-id\"))});",
+									"    pm.expect(jsonData.data.id).to.eql(pm.globals.get(\"store-id\"))});",
 									"    pm.test(\"Store Code\", function () {",
-									"    pm.expect(jsonData.store_code).to.eql(",
+									"    pm.expect(jsonData.data.store_code).to.eql(",
 									"    pm.globals.get(\"store_code\"))});",
 									"    pm.test(\"Store Name\", function () {",
-									"    pm.expect(jsonData.store_name).to.eql(pm.globals.get(\"store_name\"))});",
+									"    pm.expect(jsonData.data.store_name).to.eql(pm.globals.get(\"store_name\"))});",
 									"    ",
 									"console.log(jsonData);",
 									""
@@ -408,7 +408,7 @@
 							"script": {
 								"id": "6eb76692-8b5c-47ff-beb7-45ea56d46b98",
 								"exec": [
-									"pm.test(\"Status code should be 404 (Not Found Data)\", function () {",
+									"pm.test(\"Status code is 404 Not Found\", function () {",
 									"    pm.response.to.have.status(404);",
 									"});",
 									"",
@@ -454,6 +454,28 @@
 					"response": []
 				}
 			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "85561d2f-a512-483a-88ed-cf8645342b68",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "65c1866f-ec9d-446f-a9de-8d0c902849d3",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
 			"protocolProfileBehavior": {}
 		}
 	],
@@ -491,7 +513,7 @@
 	],
 	"variable": [
 		{
-			"id": "89125b31-336c-46fe-8167-69d6f4971470",
+			"id": "4eb8ec9a-b08b-4135-b77c-227f5a227cd9",
 			"key": "baseUrl",
 			"value": "https://kalcare-api.karsalintasbuwana.com",
 			"type": "string"
