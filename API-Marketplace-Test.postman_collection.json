@@ -24,7 +24,7 @@
 									"    pm.globals.set(\"kalcareApiToken\", jsonData.access_token);",
 									"});",
 									"pm.test(\"Successful POST request\", function () {",
-									"    pm.expect(pm.response.code).to.be.oneOf([201,202]);",
+									"    pm.expect(pm.response.code).to.be.oneOf([200,202]);",
 									"});",
 									"",
 									"pm.test(\"Response time is less than 200ms\", function () {",
