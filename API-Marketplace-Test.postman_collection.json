@@ -477,6 +477,117 @@
 				}
 			],
 			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Catalog",
+			"item": [
+				{
+					"name": "Product",
+					"item": [
+						{
+							"name": "Product - By Category ID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "e2c92c7f-1844-4f7c-89bf-2f258e0764a5",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"let jsonData = pm.response.json();",
+											"",
+											"pm.test(\"Test attribute data Body.data[])\", () => {",
+											"    _.each(jsonData.data, (item) => {",
+											"    pm.expect(item).to.have.property('id');",
+											"    pm.expect(item).to.have.property('sku');",
+											"    pm.expect(item).to.have.property('name');",
+											"    pm.expect(item).to.have.property('slug');",
+											"    // pm.expect(item).to.have.property('brand');",
+											"    // pm.expect(item.brand).to.have.property('code');",
+											"    // pm.expect(item.brand).to.have.property('name');",
+											"    pm.expect(item.prices).to.have.property('sellingPrice');",
+											"    pm.expect(item.prices).to.have.property('specialPrice');",
+											"    // pm.expect(item).to.have.property('categories');",
+											"    // pm.expect(item.categories).to.have.property('category');",
+											"    // pm.expect(item.categories.category).to.have.property('id');",
+											"    // pm.expect(item.categories.category).to.have.property('name');",
+											"    // pm.expect(item).to.have.property('images');",
+											"    pm.expect(item.images).to.have.property('thumbnail');",
+											"    pm.expect(item.images).to.have.property('default');",
+											"    pm.expect(item.images).to.have.property('original');",
+											"    // pm.expect(item).to.have.property('metaTitle');",
+											"    // pm.expect(item).to.have.property('metaDescription');",
+											"    // pm.expect(item).to.have.property('metaKeyword');",
+											"    // pm.expect(item).to.have.property('shortDescription');",
+											"    // pm.expect(item).to.have.property('weight');",
+											"    // pm.expect(item).to.have.property('basePoint');",
+											"    // pm.expect(item).to.have.property('basePointRupiah');",
+											"    // pm.expect(item).to.have.property('status');",
+											"    // pm.expect(item).to.have.property('links');",
+											"    // pm.expect(item.links[0]).to.have.property('rel');",
+											"    // pm.expect(item.links[0]).to.have.property('uri');",
+											"    });",
+											"});",
+											"",
+											"pm.test(\"Test type data Body.data[]\", () => {",
+											"    _.each(jsonData.data, (item) => {",
+											"        pm.expect(item.id).to.be.a('number');",
+											"        pm.expect(item.sku).to.be.a('string');",
+											"        pm.expect(item.name).to.be.a('string');",
+											"        pm.expect(item.slug).to.be.a('string');",
+											"        // pm.expect(item.brand.code).to.be.a('string')",
+											"        // pm.expect(item.brand.name).to.be.a('string')",
+											"        pm.expect(item.prices.sellingPrice).to.be.a('number')",
+											"        pm.expect(item.prices.specialPrice).to.be.a('number')",
+											"        // pm.expect(item.categories.category.id).to.be.a('number')",
+											"        // pm.expect(item.categories.category.name).to.be.a('string')",
+											"        pm.expect(item.images.thumbnail).to.be.a('string')",
+											"        pm.expect(item.images.default).to.be.a('string')",
+											"        pm.expect(item.images.original).to.be.a('string')",
+											"        // pm.expect(item.metaTitle).to.be.a('string')",
+											"        // pm.expect(item.metaDescription).to.be.a('string')",
+											"        // pm.expect(item.metaKeyword).to.be.a('string')",
+											"        // pm.expect(item.shortDescription).to.be.a('string')",
+											"        // pm.expect(item.weight).to.be.a('number')",
+											"        // pm.expect(item.basePoint).to.be.a('number')",
+											"        // pm.expect(item.basePointRupiah).to.be.a('number')",
+											"        // pm.expect(item.status).to.be.true",
+											"        // pm.expect(item.links[0].rel).to.be.a('string')",
+											"        // pm.expect(item.links[0].uri).to.be.a('string')",
+											"    })",
+											"});",
+											"console.log(jsonData.data);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/catalog/productByCategory/10",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"catalog",
+										"productByCategory",
+										"10"
+									]
+								},
+								"description": "SELECT p_.id, p_.sku, p_.name, p_.slug, b_.brand_code, b_.brand_name, c_.id, c_.name,\r\npi.image_thumbnail, pi.image, pi.image_original, p_.meta_title, p_.meta_description, \r\np_.meta_keyword, p_.short_description, p_.weight, p_.base_point, p_.base_point_rupiah, \r\np_.status\r\nFROM\r\nproduct_category pc\r\nRIGHT JOIN\r\ncategory c_ on pc.category_id = c_.id\r\nLEFT JOIN\r\nproduct p_ on pc.product_id = p_.id\r\nLEFT JOIN\r\nproduct_image pi on pc.product_id = pi.product_id\r\nINNER JOIN\r\nbrand b_ on p_.brand_code = b_.brand_code\r\nWHERE\r\npc.category_id = 1"
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"protocolProfileBehavior": {}
 		}
 	],
 	"auth": {
@@ -513,7 +624,7 @@
 	],
 	"variable": [
 		{
-			"id": "4eb8ec9a-b08b-4135-b77c-227f5a227cd9",
+			"id": "e67deb2a-04e2-4da2-b0ff-1188cd524fb5",
 			"key": "baseUrl",
 			"value": "https://kalcare-api.karsalintasbuwana.com",
 			"type": "string"
